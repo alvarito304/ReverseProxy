@@ -1,0 +1,52 @@
+services:
+
+  nginx_alvaro:
+    image: ubuntu/nginx
+    container_name: nginx_server
+    volumes:
+      - ./nginx_alvaro/default:/etc/nginx/sites-available/default
+      - ./nginx_alvaro/alvaro.com:/var/www/html/alvaro.com
+    restart: always
+    networks:
+      - webnet
+
+  nginx_herrero:
+    image: ubuntu/nginx
+    container_name: nginx_server_herrero
+    volumes:
+      - ./nginx_herrero/default:/etc/nginx/sites-available/default
+      - ./nginx_herrero/herrero.com:/var/www/html/herrero.com
+    restart: always
+    networks:
+      - webnet
+
+  nginx_seguro:
+    image: ubuntu/nginx
+    container_name: nginx_server_seguro
+    volumes:
+      - ./nginx_seguro/default:/etc/nginx/sites-available/default
+      - ./nginx_seguro/seguro.net:/var/www/html/seguro.net
+      - ./nginx_seguro/htpasswd/.htpasswd:/etc/nginx/.htpasswd
+    restart: always
+    networks:
+      - webnet
+
+  proxy:
+    image: ubuntu/nginx
+    container_name: proxy_server
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./proxy/conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./proxy/sslcert:/etc/nginx/certs
+    restart: always
+    depends_on:
+      - nginx_alvaro
+      - nginx_herrero
+      - nginx_seguro
+    networks:
+      - webnet
+
+networks:
+  webnet:

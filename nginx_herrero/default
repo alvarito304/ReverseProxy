@@ -1,0 +1,15 @@
+server {
+	listen 80;
+	listen [::]:80;
+
+	server_name www.herrero.com;
+
+	root /var/www/html/herrero.com;
+	index index.html;
+
+		error_page 404 /errors/404.html;
+
+    location /herrero {
+        try_files $uri $uri/ /index.html;
+    }
+}

@@ -1,0 +1,21 @@
+server {
+    listen 80;
+    listen [::]:80;
+    server_name seguro.net www.seguro.net;
+    root /var/www/html/seguro.net;
+    index index.html;
+
+    error_page 401 /errors/401.html;
+    error_page 403 /errors/403.html;
+    error_page 404 /errors/404.html;
+    error_page 500 /errors/500.html;
+
+      location /seguro {
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /secreto {
+        auth_basic "Acceso restringido";
+        auth_basic_user_file /etc/nginx/.htpasswd;
+    }
+}
